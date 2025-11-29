@@ -44,5 +44,5 @@ frontend phinatechlive
 
 backend app
         balance roundrobin
-        server 6272-web-01 98.81.246.241:80 check
-        server 6272-web-02 174.129.124.31:80 check
+        server 6272-web-01 54.84.15.122:80 check
+        server 6272-web-02 3.87.208.156:80 check
