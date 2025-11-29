@@ -1,40 +1,18 @@
 #!/usr/bin/env bash
-# Bash script to display information about subdomains
-# Option 3: Try live DNS, fallback to expected IPs
+# write a Bash script that will display information about the subdomains
 
 dns_config () {
-    # Try to fetch live DNS IP
-    ip=$(dig +short "$2"."$1")
-    
-    # Fallback to expected IP if DNS is empty
-    if [ -z "$ip" ]; then
-        case "$2" in
-            www|lb-01)
-                ip="44.201.230.247"
-                ;;
-            web-01)
-                ip="54.84.15.122"
-                ;;
-            web-02)
-                ip="3.87.208.156"
-                ;;
-            *)
-                ip="Not found"
-                ;;
-        esac
-    fi
-    
-    echo "The subdomain $2 points to $ip"
+    script=$(dig "$2"."$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
+    echo "$2 $script" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
 }
 
-# Main logic
-if [ "$#" -eq 1 ]; then
-    dns_config "$1" "www"
-    dns_config "$1" "lb-01"
-    dns_config "$1" "web-01"
-    dns_config "$1" "web-02"
-elif [ "$#" -eq 2 ]; then
-    dns_config "$1" "$2"
-else
-    echo "Usage: $0 <domain> [subdomain]"
+if [ "$#" == 1 ]
+then
+  dns_config "$1" "www"
+  dns_config "$1" "lb-01"
+  dns_config "$1" "web-01"
+  dns_config "$1" "web-02"
+elif [ "$#" == 2 ]
+then
+  dns_config "$1" "$2"
 fi
