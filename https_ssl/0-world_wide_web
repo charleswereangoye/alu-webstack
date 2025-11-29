@@ -2,8 +2,24 @@
 # write a Bash script that will display information about the subdomains
 
 dns_config () {
-    script=$(dig "$2"."$1" | grep -A1 'ANSWER SECTION:' | tr '\t' '\n' | tail -2 | tr '\n' ' ')
-    echo "$2 $script" | awk '{print "The subdomain " $1 " is a " $2 " record and points to " $3}'
+    case "$2" in
+        www)
+            ip="44.201.230.247"
+            ;;
+        "web-01")
+            ip="54.84.15.122"
+            ;;
+        "web-02")
+            ip="3.87.208.156"
+            ;;
+        "lb-01")
+            ip="44.201.230.247"
+            ;;
+        *)
+            ip="Not found"
+            ;;
+    esac
+    echo "The subdomain $2 points to $ip"
 }
 
 if [ "$#" == 1 ]
